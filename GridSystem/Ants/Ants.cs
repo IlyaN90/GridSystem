@@ -1,6 +1,7 @@
 ﻿using GridSystem.Grid;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,27 +78,53 @@ namespace GridSystem.Ants
 
         public void Navigate(GridClass Grid, int curretnPosition)
         {
-            int foodSmell = Support.S_Smell(Grid, curretnPosition);
-            int otherSmell = Support.S_OtherSmell(Grid, curretnPosition);
             int[] arrFoodSmell = SmellForFood(Grid, curretnPosition);
             int[] arrCluesSmell = SmellForClues(Grid, curretnPosition);
+            bool returnMode = false;
             if (loot > 0)
             {
                 //beräkna nästa steg hem
-                Support.S_MarkCell(Grid, curretnPosition, true);
+                returnMode = true;
+                Support.S_MarkCell(Grid, curretnPosition, returnMode);
             }
             else
             {
-                if (foodSmell > 0)
-                {
-                    //följ where foodSmell>0&&-1
-                }
-                else
-                {
-                    //följ food lukten 
-                }
-                Support.S_MarkCell(Grid, curretnPosition, false);
+                //leta mat
+                returnMode = false;
+                Support.S_MarkCell(Grid, curretnPosition, returnMode);
             }
+            int cell = Decision.MakeTheDecision(returnMode, arrFoodSmell, arrCluesSmell); 
+            int nextMove = 0;
+            switch (cell)
+            {
+                case 1:
+                    nextMove = curretnPosition + 1 - 100;
+                    break;
+                case 2:
+                    nextMove = curretnPosition + 1;
+                    break;
+                case 3:
+                    nextMove = curretnPosition + 1 + 100;
+                    break;
+                case 4:
+                    nextMove = curretnPosition - 100;
+                    break;
+                case 6:
+                    nextMove = curretnPosition + 100;
+                    break;
+                case 7:
+                    nextMove = curretnPosition - 1 - 100;
+                    break;
+                case 8:
+                    nextMove = curretnPosition - 1;
+                    break;
+                case 9:
+                    nextMove = curretnPosition - 1 + 100;
+                    break;
+            }
+            int[] nextMoveArr = Support.S_ListToCoordinates(nextMove);
+            this.x =nextMoveArr[0];
+            this.y = nextMoveArr[1];
         }
 
         public bool CheckForFood(GridClass Grid, int curretnPosition)
@@ -146,14 +173,15 @@ namespace GridSystem.Ants
         {
             int[] arr = new int[]
                 {
-                    Support.S_Smell(Grid, curretnPosition - 1 + 100),       //  -y+x
-                    Support.S_Smell(Grid, curretnPosition + 100),           //  +x
-                    Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
-                    Support.S_Smell(Grid, curretnPosition + 1),             //  +y
-                    Support.S_Smell(Grid, curretnPosition - 1),             //  -x
                     Support.S_Smell(Grid, curretnPosition + 1 - 100),       //  +y-x  
+                    Support.S_Smell(Grid, curretnPosition + 1),             //  +y
+                    Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
                     Support.S_Smell(Grid, curretnPosition - 100),           //  -x
-                    Support.S_Smell(Grid, curretnPosition - 1 - 100)        //  -x-y
+                    Support.S_Smell(Grid, curretnPosition),                 //current position
+                    Support.S_Smell(Grid, curretnPosition + 100),           //  +x
+                    Support.S_Smell(Grid, curretnPosition - 1 - 100),       //  -x-y
+                    Support.S_Smell(Grid, curretnPosition - 1),             //  -y
+                    Support.S_Smell(Grid, curretnPosition - 1 + 100)        //  -y+x
                 };
             return arr;
         }
@@ -162,14 +190,15 @@ namespace GridSystem.Ants
         {
             int[] arr = new int[]
                 {
-                    Support.S_OtherSmell(Grid, curretnPosition - 1 + 100),       //  -y+x
-                    Support.S_OtherSmell(Grid, curretnPosition + 100),           //  +x
-                    Support.S_OtherSmell(Grid, curretnPosition + 1 + 100),       //  +x+y
-                    Support.S_OtherSmell(Grid, curretnPosition + 1),             //  +y
-                    Support.S_OtherSmell(Grid, curretnPosition - 1),             //  -x
-                    Support.S_OtherSmell(Grid, curretnPosition + 1 - 100),       //  +y-x  
-                    Support.S_OtherSmell(Grid, curretnPosition - 100),           //  -x
-                    Support.S_OtherSmell(Grid, curretnPosition - 1 - 100)        //  -x-y
+                    Support.S_Smell(Grid, curretnPosition + 1 - 100),       //  +y-x  
+                    Support.S_Smell(Grid, curretnPosition + 1),             //  +y
+                    Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
+                    Support.S_Smell(Grid, curretnPosition - 100),           //  -x
+                    Support.S_Smell(Grid, curretnPosition),                 //current position
+                    Support.S_Smell(Grid, curretnPosition + 100),           //  +x
+                    Support.S_Smell(Grid, curretnPosition - 1 - 100),       //  -x-y
+                    Support.S_Smell(Grid, curretnPosition - 1),             //  -y
+                    Support.S_Smell(Grid, curretnPosition - 1 + 100)        //  -y+x
                 };
             return arr;
         }

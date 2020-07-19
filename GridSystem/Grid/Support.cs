@@ -14,6 +14,19 @@ namespace GridSystem.Grid
             int theplace = spotX + y;
             return theplace;
         }
+        //test this!
+        public static int[] S_ListToCoordinates(int position)
+        {
+            int x= position/100;
+            int y= position % 100;
+
+            int[] arr = new int[] 
+            { 
+                x,
+                y
+            };
+            return arr;
+        }
 
         public static int[] S_FoodNodeLocation()
         {
