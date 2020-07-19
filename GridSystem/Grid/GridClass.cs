@@ -40,16 +40,26 @@ namespace GridSystem.Grid
                     CellGrid.Add(c);
                 }
             }
-            int[] foodSpot = Support.S_FoodNodeLocation();
-            CellGrid[foodSpot[0]].Food = foodSpot[1];
             return CellGrid;
         }
 
-        public void MarkAnthill(int x, int y)
+        public int MarkAnthill(int x, int y)
         {
-            int theplace= Support.S_CoordinatesToList(x, y);
-            CellGrid[theplace].AnthillPosition = true;
-            CellGrid[theplace].Food = 110;
+            int antsPlace = Support.S_CoordinatesToList(x, y);
+            CellGrid[antsPlace].AnthillPosition = true;
+            CellGrid[antsPlace].Food = 110;
+            return antsPlace;
+        }
+
+        public void PlaceFood(int antsPlace)
+        {
+            int[] foodSpot = Support.S_FoodNodeLocation();
+            while (foodSpot[0] == antsPlace)
+            {
+                foodSpot = Support.S_FoodNodeLocation();
+            }
+            CellGrid[foodSpot[0]].FoodPosition = true;
+            CellGrid[foodSpot[0]].Food = foodSpot[1];
         }
     }
 }

@@ -26,11 +26,11 @@ namespace GridSystem.Ants
 
         private void PopulateAnthill()
         {
-            for(int i = 0; i<10; i++)
-            {
+            //for(int i = 0; i<10; i++)
+            //{
                 //System.Threading.Thread.Sleep(1500);
                 CreateNewAnt();
-            }
+            //}
         }
         //should be called when balance is under food:steps raito, but stashedfood is >= 60
         private void CreateNewAnt()

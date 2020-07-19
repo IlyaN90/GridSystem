@@ -18,10 +18,10 @@ namespace GridSystem.Grid
         public static int[] S_FoodNodeLocation()
         {
             Random rnd = new Random();
-            int foodCell = rnd.Next(10000);
+            int foodLocation = rnd.Next(10000);
             int foodAmmount = rnd.Next(50, 100);
             int[] foodSpot = new int[2];
-            foodSpot[0] = foodCell;
+            foodSpot[0] = foodLocation;
             foodSpot[1] = foodAmmount;
             return foodSpot;
         }
@@ -46,7 +46,7 @@ namespace GridSystem.Grid
             return -1;
         }
 
-        public static void Mark(GridClass Grid, int position, bool mode)
+        public static void S_MarkCell(GridClass Grid, int position, bool mode)
         {
             if (mode)
             {

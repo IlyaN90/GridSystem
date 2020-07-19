@@ -16,7 +16,8 @@ namespace GridSystem
             GridClass Grid = new GridClass(100);
             Grid.CellGrid = Grid.PopulateGrid();
             Anthill anthill = new Anthill(50, 50);
-            Grid.MarkAnthill(anthill.X, anthill.Y);
+            int antsPlace=Grid.MarkAnthill(anthill.X, anthill.Y);
+            Grid.PlaceFood(antsPlace);
             PrintGrid.OutputLoop(100, Grid);
             Console.ReadKey();        
         }

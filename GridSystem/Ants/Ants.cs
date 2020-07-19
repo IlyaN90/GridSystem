@@ -35,72 +35,82 @@ namespace GridSystem.Ants
             { 
                 age += 1;
                 food -= 1;
-                if (food < 0)
+                if (food <= 0)
                 {
+                    food = 0;
                     timer += 1;
                 }
-                Navigate(Grid);
+                int curretnPosition = Support.S_CoordinatesToList(x, y);
+                Actions(Grid, curretnPosition);
+                CheckForFood(Grid, curretnPosition);
+                Navigate(Grid, curretnPosition);
             }
         }
 
-
-        public void Navigate(GridClass Grid) 
+        public void Actions(GridClass Grid, int curretnPosition) 
         {
-            int curretnPosition = Support.S_CoordinatesToList(x, y);
-            LootAndEat(Grid, curretnPosition);
+            bool home = Grid.CellGrid[curretnPosition].AnthillPosition;
+            bool foodGround = CheckForFood(Grid, curretnPosition);
+            bool carringLoot = false;
+            if (loot > 0)
+            {
+                carringLoot = true;
+            }
+            if (home)
+            {
+                if (carringLoot)
+                {
+                    Grid.CellGrid[curretnPosition].Food += loot;
+                    loot = 0;
+                }
+            }
+            if (foodGround&&!carringLoot)
+            {
+                Grid.CellGrid[curretnPosition].Food=Loot(Grid.CellGrid[curretnPosition].Food);
+            }
+            if (food == 0)
+            {
+                int foodEaten = Eat(Grid.CellGrid[curretnPosition].Food);
+                Grid.CellGrid[curretnPosition].Food -= foodEaten;
+            }
+        }
 
+        public void Navigate(GridClass Grid, int curretnPosition)
+        {
             int foodSmell = Support.S_Smell(Grid, curretnPosition);
             int otherSmell = Support.S_OtherSmell(Grid, curretnPosition);
-
-                if (loot > 0)
+            int[] arrFoodSmell = SmellForFood(Grid, curretnPosition);
+            int[] arrCluesSmell = SmellForClues(Grid, curretnPosition);
+            if (loot > 0)
+            {
+                //beräkna nästa steg hem
+                Support.S_MarkCell(Grid, curretnPosition, true);
+            }
+            else
+            {
+                if (foodSmell > 0)
                 {
-                    //beräkna nästa steg hem
-                    Support.Mark(Grid, curretnPosition, true);
-                }
-                else
-                {
-                    int[] arr=LookAround(Grid, curretnPosition);
-                    if (foodSmell > 0)
-                    {
                     //följ where foodSmell>0&&-1
                 }
                 else
-                    { 
-                       //följ food lukten 
-                    }
-                    Support.Mark(Grid, curretnPosition, false);
+                {
+                    //följ food lukten 
                 }
+                Support.S_MarkCell(Grid, curretnPosition, false);
+            }
         }
 
-        public void LootAndEat(GridClass Grid, int curretnPosition)
+        public bool CheckForFood(GridClass Grid, int curretnPosition)
         {
             int foodSource = Grid.CellGrid[curretnPosition].Food;
-            if (foodSource > 0)
+            if (foodSource == 0 && Grid.CellGrid[curretnPosition].FoodPosition)
             {
-                if (Grid.CellGrid[curretnPosition].AnthillPosition)
-                {
-                    Grid.CellGrid[curretnPosition].Food += loot;
-                    int foodEaten = Eat(foodSource);
-                    Grid.CellGrid[curretnPosition].Food -= foodEaten;
-                }
-                else
-                {
-                    if (food < meal)
-                    {
-                        int foodEaten = Eat(foodSource);
-                        Grid.CellGrid[curretnPosition].Food -= foodEaten;
-                    }
-                    Loot(foodSource);
-                }
+                Grid.CellGrid[curretnPosition].FoodPosition = false;
             }
-            if (loot != 0 && food == 0)
-            {
-                int foodEaten = Eat(loot);
-                loot -= foodEaten;
-            }
+            return Grid.CellGrid[curretnPosition].FoodPosition;
         }
 
-        public void Loot(int foodSource)
+        public int Loot(int foodSource)
         {
             if (foodSource > 50)
             {
@@ -112,6 +122,7 @@ namespace GridSystem.Ants
                 loot += foodSource;
                 foodSource = 0;
             }
+            return foodSource;
         }
 
         public int Eat(int foodSource)
@@ -131,18 +142,34 @@ namespace GridSystem.Ants
             return foodEaten;
         }
 
-        public int[] LookAround(GridClass Grid, int curretnPosition)
+        public int[] SmellForFood(GridClass Grid, int curretnPosition)
         {
             int[] arr = new int[]
                 {
-                        Support.S_Smell(Grid, curretnPosition - 1 + 100),       //  -y+x
-                        Support.S_Smell(Grid, curretnPosition + 100),           //  +x
-                        Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
-                        Support.S_Smell(Grid, curretnPosition + 1),             //  +y
-                        Support.S_Smell(Grid, curretnPosition - 1),             //  -x
-                        Support.S_Smell(Grid, curretnPosition + 1 - 100),       //  +y-x  
-                        Support.S_Smell(Grid, curretnPosition - 100),           //  -x
-                        Support.S_Smell(Grid, curretnPosition - 1 - 100)        //  -x-y
+                    Support.S_Smell(Grid, curretnPosition - 1 + 100),       //  -y+x
+                    Support.S_Smell(Grid, curretnPosition + 100),           //  +x
+                    Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
+                    Support.S_Smell(Grid, curretnPosition + 1),             //  +y
+                    Support.S_Smell(Grid, curretnPosition - 1),             //  -x
+                    Support.S_Smell(Grid, curretnPosition + 1 - 100),       //  +y-x  
+                    Support.S_Smell(Grid, curretnPosition - 100),           //  -x
+                    Support.S_Smell(Grid, curretnPosition - 1 - 100)        //  -x-y
+                };
+            return arr;
+        }
+
+        public int[] SmellForClues(GridClass Grid, int curretnPosition)
+        {
+            int[] arr = new int[]
+                {
+                    Support.S_OtherSmell(Grid, curretnPosition - 1 + 100),       //  -y+x
+                    Support.S_OtherSmell(Grid, curretnPosition + 100),           //  +x
+                    Support.S_OtherSmell(Grid, curretnPosition + 1 + 100),       //  +x+y
+                    Support.S_OtherSmell(Grid, curretnPosition + 1),             //  +y
+                    Support.S_OtherSmell(Grid, curretnPosition - 1),             //  -x
+                    Support.S_OtherSmell(Grid, curretnPosition + 1 - 100),       //  +y-x  
+                    Support.S_OtherSmell(Grid, curretnPosition - 100),           //  -x
+                    Support.S_OtherSmell(Grid, curretnPosition - 1 - 100)        //  -x-y
                 };
             return arr;
         }

@@ -24,7 +24,7 @@ namespace GridSystem.Output
             for (int i = 0;i<Grid.CellGrid.Count; i++)
             {
                 bool dont = false;
-                if (Grid.CellGrid[i].Food > 0)
+                if (Grid.CellGrid[i].FoodPosition)
                 {
                     Console.Write(" f");
                     dont = true;

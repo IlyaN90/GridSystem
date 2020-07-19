@@ -16,6 +16,7 @@ namespace GridSystem.Grid
         private int searchFeromones;
         private bool antPostition;
         private bool anthillPosition;
+        private bool foodPosition;
 
         public Cell()
         {
@@ -24,6 +25,7 @@ namespace GridSystem.Grid
             foodFeromones = 0;
             searchFeromones = 0;
             antPostition = false;
+            foodPosition = false;
         }
 
         public int X { get { return this.x; } set { this.x = value; } }
@@ -34,5 +36,6 @@ namespace GridSystem.Grid
         public int SearchFeromones { get { return this.searchFeromones; } set { this.searchFeromones = value; } }
         public bool AntPostition { get { return this.antPostition; } set { this.antPostition = value; } }
         public bool AnthillPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
+        public bool FoodPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
     }
 }
