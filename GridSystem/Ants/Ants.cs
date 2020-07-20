@@ -16,6 +16,7 @@ namespace GridSystem.Ants
         private int age;
         private int x;
         private int y;
+        private List<Tactic> tactics;
 
         private readonly int meal = 15; 
 
@@ -27,6 +28,9 @@ namespace GridSystem.Ants
             this.loot = 0;
             this.timer = 0;
             this.age = 0;
+            Tactic tactic = new Tactic();
+            //read from file or create file and genreate tacticsList
+            tactics = tactic.CreateTacticsList();
         }
 
 
@@ -81,6 +85,15 @@ namespace GridSystem.Ants
             int[] arrFoodSmell = SmellForFood(Grid, curretnPosition);
             int[] arrCluesSmell = SmellForClues(Grid, curretnPosition);
             bool returnMode = false;
+
+            //if tactic.totalTimes is <100 force ants to take that decision
+            //else take decisions that has raito >1 
+            //when does an ant need to make a new decision
+            //what are criterias for right or wrong decision?
+            //when to document failure or success
+            int cell = Decision.MakeTheDecision(returnMode, arrFoodSmell, arrCluesSmell, tactics);
+
+
             if (loot > 0)
             {
                 //beräkna nästa steg hem
@@ -93,7 +106,7 @@ namespace GridSystem.Ants
                 returnMode = false;
                 Support.S_MarkCell(Grid, curretnPosition, returnMode);
             }
-            int cell = Decision.MakeTheDecision(returnMode, arrFoodSmell, arrCluesSmell); 
+
             int nextMove = 0;
             switch (cell)
             {

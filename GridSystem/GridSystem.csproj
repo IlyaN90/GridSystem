@@ -46,6 +46,7 @@
     <Compile Include="Ants\Anthill.cs" />
     <Compile Include="Ants\Ants.cs" />
     <Compile Include="Ants\Decision.cs" />
+    <Compile Include="Ants\Tactic.cs" />
     <Compile Include="Grid\Cell.cs" />
     <Compile Include="Grid\GridClass.cs" />
     <Compile Include="Grid\Support.cs" />

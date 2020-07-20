@@ -8,7 +8,7 @@ namespace GridSystem.Ants
 {
     public static class Decision
     {
-        public static int MakeTheDecision(bool returnMode, int[] arrFoodSmell, int[] arrSeachSmell)
+        public static int MakeTheDecision(bool returnMode, int[] arrFoodSmell, int[] arrSeachSmell, List<Tactic> tactics)
         {
             int[] vectorF1 = new int[]{arrFoodSmell[0],arrFoodSmell[1],arrFoodSmell[2]};
             int[] vectorF2 = new int[]{arrFoodSmell[3],arrFoodSmell[4],arrFoodSmell[5]};
@@ -46,8 +46,8 @@ namespace GridSystem.Ants
             double s7 = countVector(vectorS7);
             double s8 = countVector(vectorS8);
 
+
             //archive mode, highestValues, lowestValue, allTheSame?, direction, moveTaken.
-            
 
             return -1;
         }
@@ -60,7 +60,7 @@ namespace GridSystem.Ants
                 weight = (vector[0] + vector[1] + vector[2])/3 + (vector[0] + vector[1] + vector[2]) % 3;
                 if(vector[0]> vector[2])
                 {
-                    weight = weight*(-1);
+                    weight *= (-1);
                 }
             }
             return weight;
