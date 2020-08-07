@@ -17,8 +17,6 @@ namespace GridSystem.Ants
         private int totalTimes;
         private double raito;
 
-        public List<Tactic> tactics;
-
         public Tactic()
         {
             plusPoints = 0;
@@ -27,35 +25,36 @@ namespace GridSystem.Ants
             raito = 0;
         }
 
-        public Tactic(int plusPoints, int minusPoints, int totalTimes, double raito)
+        public Tactic(bool returnMode, bool allTheSame, bool towards, bool from, int plusPoints, int minusPoints, int totalTimes, double raito)
         {
+            this.returnMode = returnMode;
+            this.allTheSame = allTheSame;
+            this.towards = towards;
+            this.from = from;
             this.plusPoints = plusPoints;
             this.minusPoints = minusPoints;
             this.totalTimes = totalTimes;
             this.raito = raito;
         }
 
+        //the tactic worked
         public void addPoint() 
         {
             this.plusPoints += 1;
             this.totalTimes += 1;
         }
+        //the tactic failed
         public void removePoint()
         {
             this.minusPoints -= 1;
             this.totalTimes -= 1;
         }
-
+        //get the raito plusPointsa/minusPoints
         public void CalculateRaito()
         {
             this.raito = plusPoints/minusPoints + plusPoints%minusPoints;
         }
+        //create all possible strategies
 
-        public List<Tactic> CreateTacticsList()
-        {
-            //read from file or create file and genreate tacticsList
-            List<Tactic> tactics = new List<Tactic> { };
-            return tactics;
-        }
     }
 }

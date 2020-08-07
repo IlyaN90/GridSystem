@@ -8,8 +8,12 @@ namespace GridSystem.Ants
 {
     public static class Decision
     {
+        //decide where to
         public static int MakeTheDecision(bool returnMode, int[] arrFoodSmell, int[] arrSeachSmell, List<Tactic> tactics)
         {
+            //ToDo: special case if location food or anthill, probably no vectors available
+            //Get tactics List and compare current situation with which tactic to use
+
             int[] vectorF1 = new int[]{arrFoodSmell[0],arrFoodSmell[1],arrFoodSmell[2]};
             int[] vectorF2 = new int[]{arrFoodSmell[3],arrFoodSmell[4],arrFoodSmell[5]};
             int[] vectorF3 = new int[]{arrFoodSmell[6],arrFoodSmell[7],arrFoodSmell[8]};
@@ -46,12 +50,11 @@ namespace GridSystem.Ants
             double s7 = countVector(vectorS7);
             double s8 = countVector(vectorS8);
 
-
             //archive mode, highestValues, lowestValue, allTheSame?, direction, moveTaken.
 
             return -1;
         }
-
+        //decide which vector is more worth to follow
         private static double countVector(int[] vector)
         {
             double weight = 0;
@@ -65,7 +68,7 @@ namespace GridSystem.Ants
             }
             return weight;
         }
-
+        //are three value a vector?
         private static bool IsVector(int[] vector)
         {
             bool isVector = true;

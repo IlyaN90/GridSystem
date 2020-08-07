@@ -13,7 +13,10 @@ namespace GridSystem.Ants
         private int y;
         int stashedFood;
 
-        List<Ants> ants;
+        public List<Ants> ants;
+
+        public int X { get { return this.x; } set { this.x = value; } }
+        public int Y { get { return this.y; } set { this.y = value; } }
 
         public Anthill(int x, int y)
         {
@@ -23,7 +26,7 @@ namespace GridSystem.Ants
             stashedFood = 110;
             PopulateAnthill();
         }
-
+        //create Ants in bulk
         private void PopulateAnthill()
         {
             //for(int i = 0; i<10; i++)
@@ -32,6 +35,7 @@ namespace GridSystem.Ants
                 CreateNewAnt();
             //}
         }
+
         //should be called when balance is under food:steps raito, but stashedfood is >= 60
         private void CreateNewAnt()
         {
@@ -42,8 +46,19 @@ namespace GridSystem.Ants
                 ants.Add(Ant);
             }
         }
-
-        public int X { get { return this.x; } set { this.x = value; } }
-        public int Y { get { return this.y; } set { this.y = value; } }
+        //returns false if at least one Ant is alive
+        public bool AntsAlive()
+        {
+            bool gameOver = true;
+            foreach (Ants ant in ants)
+            {
+                if (ant.timer < 50)
+                {
+                    gameOver = false;
+                    break;
+                }
+            }
+            return gameOver;
+        }
     }
 }

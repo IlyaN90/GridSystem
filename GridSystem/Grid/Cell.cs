@@ -35,6 +35,7 @@ namespace GridSystem.Grid
         public int FoodFeromones { get { return this.foodFeromones; } set { this.foodFeromones = value; } }
         public int SearchFeromones { get { return this.searchFeromones; } set { this.searchFeromones = value; } }
         public bool AntPostition { get { return this.antPostition; } set { this.antPostition = value; } }
+
         public bool AnthillPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
         public bool FoodPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
     }

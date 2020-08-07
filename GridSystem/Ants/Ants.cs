@@ -8,15 +8,17 @@ using System.Threading.Tasks;
 
 namespace GridSystem.Ants
 {
-    public class Ants
+    public partial class Ants
     {
         private int food;
+        private int totalFoodCollected; //for stats
         private int loot;
-        private int timer;
-        private int age;
+        private int age;    //for stats
+        private int lastXpos;
+        private int lastYpos;
         private int x;
         private int y;
-        private List<Tactic> tactics;
+        public int timer;
 
         private readonly int meal = 15; 
 
@@ -24,20 +26,22 @@ namespace GridSystem.Ants
         {
             this.x = x;
             this.y = y;
+            lastXpos = 0;
+            lastYpos = 0;
             this.food = 0;
+            this.totalFoodCollected = 0;
             this.loot = 0;
             this.timer = 0;
             this.age = 0;
-            Tactic tactic = new Tactic();
-            //read from file or create file and genreate tacticsList
-            tactics = tactic.CreateTacticsList();
         }
 
-
+        //if Ant is alive, do Actions, checkForFood, Navigate
         public void NewTurn(GridClass Grid)
         {
-            if(timer < 50) 
-            { 
+            if (timer < 50) 
+            {
+                lastXpos = x;
+                lastYpos = y;
                 age += 1;
                 food -= 1;
                 if (food <= 0)
@@ -46,12 +50,14 @@ namespace GridSystem.Ants
                     timer += 1;
                 }
                 int curretnPosition = Support.S_CoordinatesToList(x, y);
+                Grid.CellGrid[curretnPosition].AntPostition = false;
                 Actions(Grid, curretnPosition);
                 CheckForFood(Grid, curretnPosition);
-                Navigate(Grid, curretnPosition);
+                //Navigate(Grid, curretnPosition);
+                TestNavigate(Grid, curretnPosition);//Ant possesses Home and food coordinates
             }
         }
-
+        //loot|stash|eat
         public void Actions(GridClass Grid, int curretnPosition) 
         {
             bool home = Grid.CellGrid[curretnPosition].AnthillPosition;
@@ -63,8 +69,10 @@ namespace GridSystem.Ants
             }
             if (home)
             {
+                ResetLastPosition();
                 if (carringLoot)
                 {
+                    totalFoodCollected += loot;
                     Grid.CellGrid[curretnPosition].Food += loot;
                     loot = 0;
                 }
@@ -72,6 +80,7 @@ namespace GridSystem.Ants
             if (foodGround&&!carringLoot)
             {
                 Grid.CellGrid[curretnPosition].Food=Loot(Grid.CellGrid[curretnPosition].Food);
+                ResetLastPosition();
             }
             if (food == 0)
             {
@@ -79,7 +88,7 @@ namespace GridSystem.Ants
                 Grid.CellGrid[curretnPosition].Food -= foodEaten;
             }
         }
-
+        //chose where too next
         public void Navigate(GridClass Grid, int curretnPosition)
         {
             int[] arrFoodSmell = SmellForFood(Grid, curretnPosition);
@@ -91,8 +100,7 @@ namespace GridSystem.Ants
             //when does an ant need to make a new decision
             //what are criterias for right or wrong decision?
             //when to document failure or success
-            int cell = Decision.MakeTheDecision(returnMode, arrFoodSmell, arrCluesSmell, tactics);
-
+            int cell = Decision.MakeTheDecision(returnMode, arrFoodSmell, arrCluesSmell, Grid.tactics);
 
             if (loot > 0)
             {
@@ -138,8 +146,9 @@ namespace GridSystem.Ants
             int[] nextMoveArr = Support.S_ListToCoordinates(nextMove);
             this.x =nextMoveArr[0];
             this.y = nextMoveArr[1];
+            Grid.CellGrid[curretnPosition].AntPostition = true;
         }
-
+        //is Ant standing on food?
         public bool CheckForFood(GridClass Grid, int curretnPosition)
         {
             int foodSource = Grid.CellGrid[curretnPosition].Food;
@@ -149,7 +158,7 @@ namespace GridSystem.Ants
             }
             return Grid.CellGrid[curretnPosition].FoodPosition;
         }
-
+        //if there is food pick it up
         public int Loot(int foodSource)
         {
             if (foodSource > 50)
@@ -164,7 +173,7 @@ namespace GridSystem.Ants
             }
             return foodSource;
         }
-
+        //Eat as much as possible but not more than a meal
         public int Eat(int foodSource)
         {
             int foodEaten = 0;
@@ -181,7 +190,7 @@ namespace GridSystem.Ants
             timer = 0;
             return foodEaten;
         }
-
+        //get arr with values of "i found food" feromones
         public int[] SmellForFood(GridClass Grid, int curretnPosition)
         {
             int[] arr = new int[]
@@ -198,22 +207,28 @@ namespace GridSystem.Ants
                 };
             return arr;
         }
-
+        //get arr with values of "i am looking for food" feromones
         public int[] SmellForClues(GridClass Grid, int curretnPosition)
         {
             int[] arr = new int[]
                 {
-                    Support.S_Smell(Grid, curretnPosition + 1 - 100),       //  +y-x  
-                    Support.S_Smell(Grid, curretnPosition + 1),             //  +y
-                    Support.S_Smell(Grid, curretnPosition + 1 + 100),       //  +x+y
-                    Support.S_Smell(Grid, curretnPosition - 100),           //  -x
-                    Support.S_Smell(Grid, curretnPosition),                 //current position
-                    Support.S_Smell(Grid, curretnPosition + 100),           //  +x
-                    Support.S_Smell(Grid, curretnPosition - 1 - 100),       //  -x-y
-                    Support.S_Smell(Grid, curretnPosition - 1),             //  -y
-                    Support.S_Smell(Grid, curretnPosition - 1 + 100)        //  -y+x
+                    Support.S_OtherSmell(Grid, curretnPosition + 1 - 100),       //  +y-x  
+                    Support.S_OtherSmell(Grid, curretnPosition + 1),             //  +y
+                    Support.S_OtherSmell(Grid, curretnPosition + 1 + 100),       //  +x+y
+                    Support.S_OtherSmell(Grid, curretnPosition - 100),           //  -x
+                    Support.S_OtherSmell(Grid, curretnPosition),                 //current position
+                    Support.S_OtherSmell(Grid, curretnPosition + 100),           //  +x
+                    Support.S_OtherSmell(Grid, curretnPosition - 1 - 100),       //  -x-y
+                    Support.S_OtherSmell(Grid, curretnPosition - 1),             //  -y
+                    Support.S_OtherSmell(Grid, curretnPosition - 1 + 100)        //  -y+x
                 };
             return arr;
+        }
+        //if at the antHill or foodPosition, reset last position so Ant can go the way it came
+        private void ResetLastPosition()
+        {
+            lastXpos = 0;
+            lastYpos = 0;
         }
     }
 }

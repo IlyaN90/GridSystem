@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GridSystem.Ants;
+using GridSystem.Output;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,17 +8,19 @@ using System.Threading.Tasks;
 
 namespace GridSystem.Grid
 {
-    public class GridClass
+    public partial class GridClass
     {
         private int len;
         public int ahX;
         public int ahY;
         public List<Cell> CellGrid;
+        public List<Tactic> tactics;
 
         public GridClass(int cells)
         {
             this.len = cells;
             CellGrid = new List<Cell>() { };
+            this.tactics = GetTacticsList();
         }
 
         public int Len 
@@ -48,10 +52,11 @@ namespace GridSystem.Grid
             int antsPlace = Support.S_CoordinatesToList(x, y);
             CellGrid[antsPlace].AnthillPosition = true;
             CellGrid[antsPlace].Food = 110;
+            anthillLocation = antsPlace;
             return antsPlace;
         }
 
-        public void PlaceFood(int antsPlace)
+        public int PlaceFood(int antsPlace)
         {
             int[] foodSpot = Support.S_FoodNodeLocation();
             while (foodSpot[0] == antsPlace)
@@ -60,6 +65,23 @@ namespace GridSystem.Grid
             }
             CellGrid[foodSpot[0]].FoodPosition = true;
             CellGrid[foodSpot[0]].Food = foodSpot[1];
+            foodLocation = foodSpot[0];
+            return foodSpot[0];
+        }
+
+        //read from file or create file and genreate tacticsList
+        public List<Tactic> GetTacticsList()
+        {
+            if (ReadWriteData.Read(out List<Tactic> txtTactics))
+            {
+                tactics = txtTactics;
+            }
+            else
+            {
+                tactics = new List<Tactic> { };
+                ReadWriteData.Write(tactics);
+            }
+            return tactics;
         }
     }
 }
