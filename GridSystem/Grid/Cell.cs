@@ -37,6 +37,6 @@ namespace GridSystem.Grid
         public bool AntPostition { get { return this.antPostition; } set { this.antPostition = value; } }
 
         public bool AnthillPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
-        public bool FoodPosition { get { return this.anthillPosition; } set { this.anthillPosition = value; } }
+        public bool FoodPosition { get { return this.foodPosition; } set { this.foodPosition = value; } }
     }
 }

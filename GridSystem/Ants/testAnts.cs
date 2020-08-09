@@ -12,7 +12,7 @@ namespace GridSystem.Ants
         private int testAnthillCoordinates;
         private int testFoodCoordinates;
 
-        public void TestNavigate(GridClass Grid, int curretnPosition)
+        public void TestNavigate(GridClass Grid, int currentPosition)
         {
             int[] locations = Grid.RevealLocations();
             testAnthillCoordinates = locations[0];

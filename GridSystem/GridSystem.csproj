@@ -61,6 +61,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="VariousErrors\ex_OffTheGrid.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

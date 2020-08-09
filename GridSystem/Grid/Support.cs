@@ -9,13 +9,22 @@ namespace GridSystem.Grid
 {
     public static class Support
     {
-        public static int S_CoordinatesToList(int x, int y)
+        public static bool S_CoordinatesToList(int x, int y, out int thePlace)
         {
+            thePlace = -1;
+            if (x < 0 && y < 0)
+            {
+                return false;
+            }
+            else if (x > 100 && y > 100)
+            {
+                return false;
+            }
             int spotX = x * 100;
-            int theplace = spotX + y;
-            return theplace;
+            thePlace = spotX + y;
+            return true;
         }
-        //test this!
+
         public static int[] S_ListToCoordinates(int position)
         {
             int x= position/100;
@@ -27,6 +36,52 @@ namespace GridSystem.Grid
                 y
             };
             return arr;
+        }
+
+        public static int LastFromTheSortedList(List<Tactic> tactics)
+        {
+            List<Tactic> biggestRaitoList = new List<Tactic>();
+            double biggest = Double.MinValue;
+            foreach (Tactic tactic in tactics)
+            {
+                if (tactic.raito.Equals(biggest))
+                {
+                    biggestRaitoList.Add(tactic);
+                }
+                else if (Support.CompareDouble(biggest, tactic.raito, out double result))
+                {
+                    biggest = result;
+                    biggestRaitoList.Add(tactic);
+                }
+            }
+            return biggestRaitoList[biggestRaitoList.Count - 1].number;
+        }
+
+        public static bool CompareDouble(double a, double b, out double biggest)
+        {
+            biggest = a;
+            long aLong = (long)a;
+            double aRest = a - aLong;
+
+            long bLong = (long)b;
+            double bRest = b - aLong;
+
+            if (a == b)
+            {
+                double rest = bRest - aRest;
+                if (rest >= 0)
+                {
+                    biggest = b;
+                    return true;
+                }
+            }
+            else
+            {
+                double bigger = b-a;
+                biggest = b;
+                return true;
+            }
+            return false;
         }
 
         public static int[] S_FoodNodeLocation()

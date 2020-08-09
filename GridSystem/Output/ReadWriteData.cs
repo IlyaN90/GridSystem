@@ -61,10 +61,12 @@ namespace GridSystem.Output
             {
                 tactics = new List<Tactic>();
                 string[] txtData = System.IO.File.ReadAllLines(path);
+                int number = 0;
                 bool returnMode = false;
                 bool allTheSame = false;
                 bool towards = false;
-                bool from = false;
+                bool edge = false;
+                bool pickThisDirection = false;
                 int plusPoints = 0;
                 int minusPoints = 0;
                 int totalTimes = 0;
@@ -79,7 +81,7 @@ namespace GridSystem.Output
                             //create new tactic
                             //ToDo: cast data types from line
 
-                            Tactic tactic = new Tactic(returnMode, allTheSame, towards, from, plusPoints, minusPoints, totalTimes, raito);
+                            Tactic tactic = new Tactic(number, returnMode, allTheSame, towards, edge, pickThisDirection, plusPoints, minusPoints, totalTimes, raito);
                             tactics.Add(tactic);
                         }
                         catch (FormatException)

@@ -26,6 +26,7 @@ namespace GridSystem.Output
                 System.Threading.Thread.Sleep(1000);
                 Console.Clear();
             }*/
+            //ReadWriteData.Write(Grid.tactics);
         }
 
         //iterates throu each ant and handles new food spawns
@@ -39,7 +40,6 @@ namespace GridSystem.Output
                 Grid.PlaceFood(anthillLocation);
             }
             */
-
             foreach (Ants.Ants ant in anthill.ants)
             {
                 ant.NewTurn(Grid);
@@ -52,15 +52,16 @@ namespace GridSystem.Output
             for (int i = 0;i<Grid.CellGrid.Count; i++)
             {
                 bool dont = false;
-                if (Grid.CellGrid[i].FoodPosition)
-                {
-                    Console.Write(" f");
-                    dont = true;
-                }
                 if (Grid.CellGrid[i].AnthillPosition == true)
                 {
                     Console.Write(" X");
                 }
+                else if (Grid.CellGrid[i].FoodPosition)
+                {
+                    Console.Write(" f");
+                    dont = true;
+                }
+                //get if from ants object not the cell, when multiple ants have spawned
                 else if (Grid.CellGrid[i].AntPostition == true)
                 {
                     Console.Write(" a");
@@ -71,7 +72,7 @@ namespace GridSystem.Output
                     {
                         Console.Write(" .");
                     }
-                    Console.WriteLine(" " + i);
+                    Console.WriteLine(" " + Grid.CellGrid[i].Y);
                 }
                 else
                 {

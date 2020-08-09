@@ -8,14 +8,16 @@ namespace GridSystem.Ants
 {
     public class Tactic
     {
-        private bool returnMode;
-        private bool allTheSame;
-        private bool towards;
-        private bool from;
+        public bool returnMode;
+        public bool allTheSame;
+        public bool towards;
+        public bool edge;
+        public bool picThisDirection;
         private int plusPoints;
         private int minusPoints;
-        private int totalTimes;
-        private double raito;
+        public int totalTimes;
+        public double raito;
+        public int number;
 
         public Tactic()
         {
@@ -23,14 +25,15 @@ namespace GridSystem.Ants
             minusPoints = 0;
             totalTimes = 0;
             raito = 0;
+            number = 0;
         }
 
-        public Tactic(bool returnMode, bool allTheSame, bool towards, bool from, int plusPoints, int minusPoints, int totalTimes, double raito)
+        public Tactic(int number, bool returnMode, bool allTheSame, bool towards, bool edge, bool picThisDirection, int plusPoints, int minusPoints, int totalTimes, double raito)
         {
+            this.number = number;
             this.returnMode = returnMode;
             this.allTheSame = allTheSame;
             this.towards = towards;
-            this.from = from;
             this.plusPoints = plusPoints;
             this.minusPoints = minusPoints;
             this.totalTimes = totalTimes;

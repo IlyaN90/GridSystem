@@ -33,9 +33,9 @@ namespace GridSystem.Grid
 
         public List<Cell> PopulateGrid()
         {
-            for (int x = 0; x < Len; x++) 
+            for (int x = 1; x < Len; x++) 
             {
-                for(int y =0; y < Len; y++)
+                for(int y = 1; y < Len; y++)
                 {
                     Cell c = new Cell();
                     c.X = x;
@@ -49,23 +49,35 @@ namespace GridSystem.Grid
 
         public int MarkAnthill(int x, int y)
         {
-            int antsPlace = Support.S_CoordinatesToList(x, y);
-            CellGrid[antsPlace].AnthillPosition = true;
-            CellGrid[antsPlace].Food = 110;
-            anthillLocation = antsPlace;
-            return antsPlace;
+            int antsPlace = 0;
+            if (Support.S_CoordinatesToList(x, y, out int position))
+            {
+                antsPlace = position;
+                CellGrid[antsPlace].AnthillPosition = true;
+                CellGrid[antsPlace].Food = 110;
+                partial_anthillLocation = antsPlace;
+            }
+            return partial_anthillLocation;
         }
 
-        public int PlaceFood(int antsPlace)
+        public int PlaceFood(int antsHillLocation)
         {
             int[] foodSpot = Support.S_FoodNodeLocation();
-            while (foodSpot[0] == antsPlace)
+            bool spotIsBusy = true;
+            while (spotIsBusy)
             {
-                foodSpot = Support.S_FoodNodeLocation();
+                if(foodSpot[0] == antsHillLocation)
+                {
+                    foodSpot = Support.S_FoodNodeLocation();
+                }
+                else
+                {
+                    spotIsBusy = false;
+                }
             }
             CellGrid[foodSpot[0]].FoodPosition = true;
             CellGrid[foodSpot[0]].Food = foodSpot[1];
-            foodLocation = foodSpot[0];
+            partial_foodLocation = foodSpot[0];
             return foodSpot[0];
         }
 
@@ -78,7 +90,34 @@ namespace GridSystem.Grid
             }
             else
             {
-                tactics = new List<Tactic> { };
+                //bool returnMode, bool allTheSame, bool towards, bool edge, bool picThisDirection, int plusPoints, int minusPoints, int totalTimes, double raito
+
+                bool returnMode = true;
+                bool allTheSame = true;
+                bool towards = true;
+                bool edge = false;
+                bool picThisDirection = false;
+                tactics = new List<Tactic>
+                {
+                    //searching 
+                    new Tactic(1,!returnMode, !allTheSame, towards, !edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(2, !returnMode, !allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(3, !returnMode, allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
+                    //going back
+                    new Tactic(4, returnMode, !allTheSame, towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
+                    new Tactic(5, returnMode, !allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
+                    new Tactic(6, returnMode, allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
+                    //edge searching
+                    new Tactic(7, !returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
+                    new Tactic(8, !returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(9, !returnMode, !allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(10, !returnMode, !allTheSame, !towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    //edge going back
+                    new Tactic(11, returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
+                    new Tactic(12, returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(13, returnMode, !allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    new Tactic(14, returnMode, !allTheSame, !towards, edge, !picThisDirection, 0, 0, 0, 0)
+                };
                 ReadWriteData.Write(tactics);
             }
             return tactics;

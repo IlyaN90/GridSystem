@@ -8,15 +8,15 @@ namespace GridSystem.Grid
 {
     public partial class GridClass
     {
-        private int foodLocation;
-        private int anthillLocation;
+        private int partial_foodLocation;
+        private int partial_anthillLocation;
 
         public int[] RevealLocations()
         {
             int[] allLocations = new int[]
             {
-                foodLocation,
-                anthillLocation
+                partial_foodLocation,
+                partial_anthillLocation
             };
             return allLocations;
         }

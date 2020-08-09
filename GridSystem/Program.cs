@@ -13,7 +13,7 @@ namespace GridSystem
     {
         static void Main(string[] args)
         {
-            GridClass Grid = new GridClass(100);
+            GridClass Grid = new GridClass(101);
             List<Tactic> tactics = Grid.GetTacticsList();
             Grid.CellGrid = Grid.PopulateGrid();
             Anthill anthill = new Anthill(50, 50);
