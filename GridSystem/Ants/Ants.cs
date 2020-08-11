@@ -144,28 +144,31 @@ namespace GridSystem.Ants
 
             if (tacticNumber == 0)
             {
-                tacticNumber = Decision.ChooseTactic(x, y, returnMode, Grid, currentPosition);
+                tacticNumber = Decision.ChooseTactic(x, y, returnMode, Grid.CellGrid, Grid.tactics, currentPosition);
             }
-
-            int nextMove = Decision.NextStep(x, y, currentPosition, returnMode, Grid, tacticNumber);
-
-            int[] nextMoveArr = Support.S_ListToCoordinates(nextMove);
-            this.x =nextMoveArr[0];
-            this.y = nextMoveArr[1];
-            try
+            int nextStep = 0;
+            Tactic chosenTactic = Grid.tactics.Where(t => t.number == tacticNumber).FirstOrDefault();
+            if (chosenTactic != null)
             {
-                if (Support.S_CoordinatesToList(x, y, out int result))
+                nextStep = Decision.NextStep(x, y, currentPosition, Grid.CellGrid, chosenTactic);
+                int[] nextStepArr = Support.S_ListToCoordinates(nextStep);
+                this.x = nextStepArr[0];
+                this.y = nextStepArr[1];
+                try
                 {
-                    currentPosition = result;
-                    Grid.CellGrid[currentPosition].AntPostition = true;
+                    if (Support.S_CoordinatesToList(x, y, out int result))
+                    {
+                        currentPosition = result;
+                        Grid.CellGrid[currentPosition].AntPostition = true;
+                    }
+                    else
+                    {
+                        throw new ex_OffTheGrid("Ant has escaped the Grid!");
+                    }
                 }
-                else
+                catch (ex_OffTheGrid)
                 {
-                    throw new ex_OffTheGrid("Ant has escaped the Grid!");
                 }
-            }
-            catch (ex_OffTheGrid)
-            {
             }
         }
 

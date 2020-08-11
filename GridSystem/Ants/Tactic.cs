@@ -57,7 +57,5 @@ namespace GridSystem.Ants
         {
             this.raito = plusPoints/minusPoints + plusPoints%minusPoints;
         }
-        //create all possible strategies
-
     }
 }

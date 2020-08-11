@@ -99,24 +99,28 @@ namespace GridSystem.Grid
                 bool picThisDirection = false;
                 tactics = new List<Tactic>
                 {
-                    //searching 
+//searching 
                     new Tactic(1,!returnMode, !allTheSame, towards, !edge, !picThisDirection, 0, 0, 0, 0),
                     new Tactic(2, !returnMode, !allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0),
+                    //random searching
                     new Tactic(3, !returnMode, allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
-                    //going back
+//going back
                     new Tactic(4, returnMode, !allTheSame, towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
                     new Tactic(5, returnMode, !allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
+                    //random going back
                     new Tactic(6, returnMode, allTheSame, !towards, !edge, !picThisDirection, 0, 0, 0, 0 ),
-                    //edge searching
-                    new Tactic(7, !returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
-                    new Tactic(8, !returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+//edge searching
                     new Tactic(9, !returnMode, !allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
                     new Tactic(10, !returnMode, !allTheSame, !towards, edge, !picThisDirection, 0, 0, 0, 0),
-                    //edge going back
-                    new Tactic(11, returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
-                    new Tactic(12, returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    //random Edge searching
+                    new Tactic(7, !returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
+                    new Tactic(8, !returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
+//edge going back
                     new Tactic(13, returnMode, !allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0),
-                    new Tactic(14, returnMode, !allTheSame, !towards, edge, !picThisDirection, 0, 0, 0, 0)
+                    new Tactic(14, returnMode, !allTheSame, !towards, edge, !picThisDirection, 0, 0, 0, 0),
+                    //random Edge going back
+                    new Tactic(11, returnMode, allTheSame, towards, edge, picThisDirection, 0, 0, 0, 0),
+                    new Tactic(12, returnMode, allTheSame, towards, edge, !picThisDirection, 0, 0, 0, 0)
                 };
                 ReadWriteData.Write(tactics);
             }

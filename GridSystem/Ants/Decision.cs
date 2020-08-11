@@ -12,197 +12,109 @@ namespace GridSystem.Ants
     public static class Decision
     {
         //choses tactic depending on tactic.raito||forces a random tactic for training
-        public static int ChooseTactic(int x, int y, bool returnMode, GridClass Grid, int currentPosition)
+        public static int ChooseTactic(int x, int y, bool returnMode, List<Cell> CellsList, List<Tactic> tactics, int currentPosition)
         {
             //choose new tactic
             int decision = -1;
             bool edge = CheckForEdges(x, y);
+            List<Cell> tilesAround = TilesAround(CellsList, currentPosition);
 
             //change to bool func (out vector)
-            foodVectorsNearby(Grid, currentPosition);
-            searchVectorsNearby(Grid, currentPosition);
-            //add vectors
-            List<Tactic> toChoseFrom = Grid.tactics.Where(r => (r.returnMode == returnMode) && (r.edge==edge)).ToList();
+            foodVectorsNearby(tilesAround, currentPosition);
+            searchVectorsNearby(tilesAround, currentPosition);
 
-            if(needMoreTraining(toChoseFrom, out List < Tactic > needsMoreData))
+            List<Tactic> toChoseFrom = tactics.Where(r => (r.returnMode == returnMode) && (r.edge==edge)).ToList();
+
+            if (needMoreTraining(toChoseFrom, out List < Tactic > needsMoreData))
             {
-                Random rnd = new Random();
-                int pickRandom = rnd.Next(needsMoreData.Count);
-                decision = needsMoreData[pickRandom].number;
+                decision = Support.S_PickRandomTactic(needsMoreData);
             }
             else
             {
-                decision = Support.LastFromTheSortedList(Grid.tactics);
+                decision = Support.S_LastFromTheSortedList(toChoseFrom);
             }
             return decision;
         }
-        //todo bool func(out vector) get the highest weight if there is a search vector nearby
-        public static void searchVectorsNearby(GridClass Grid, int currentPosition)
-        {
-            int weight = 0;
-            int[] arrSeachSmell = SmellForClues(Grid, currentPosition);
-            int[] vectorS1 = new int[] { arrSeachSmell[0], arrSeachSmell[1], arrSeachSmell[2] };
-            int[] vectorS2 = new int[] { arrSeachSmell[3], arrSeachSmell[4], arrSeachSmell[5] };
-            int[] vectorS3 = new int[] { arrSeachSmell[6], arrSeachSmell[7], arrSeachSmell[8] };
-            int[] vectorS4 = new int[] { arrSeachSmell[6], arrSeachSmell[3], arrSeachSmell[0] };
-            int[] vectorS5 = new int[] { arrSeachSmell[7], arrSeachSmell[4], arrSeachSmell[1] };
-            int[] vectorS6 = new int[] { arrSeachSmell[8], arrSeachSmell[5], arrSeachSmell[2] };
-            int[] vectorS7 = new int[] { arrSeachSmell[6], arrSeachSmell[4], arrSeachSmell[2] };
-            int[] vectorS8 = new int[] { arrSeachSmell[0], arrSeachSmell[4], arrSeachSmell[8] };
-            int s1 = 0;
-            int s2 = 0;
-            int s3 = 0;
-            int s4 = 0;
-            int s5 = 0;
-            int s6 = 0;
-            int s7 = 0;
-            int s8 = 0;
-            if (countVector(vectorS1, out weight))
-            {
-                s1 = weight;
-            }
-            if (countVector(vectorS2, out weight))
-            {
-                s2 = weight;
-            }
-            if (countVector(vectorS3, out weight))
-            {
-                s3 = weight;
-            }
-            if (countVector(vectorS4, out weight))
-            {
-                s4 = weight;
-            }
-            if (countVector(vectorS5, out weight))
-            {
-                s5 = weight;
-            }
-            if (countVector(vectorS6, out weight))
-            {
-                s6 = weight;
-            }
-            if (countVector(vectorS7, out weight))
-            {
-                s7 = weight;
-            }
-            if (countVector(vectorS8, out weight))
-            {
-                s8 = weight;
-            }
-        }
-        //todo bool func(out vector) get the highest weight if there is a food vector nearby
-        public static void foodVectorsNearby(GridClass Grid, int currentPosition) 
-        {
-            int[] arrFoodSmell = SmellForFood(Grid, currentPosition);
-
-            //all possible vectors
-            int[] vectorF1 = new int[] { arrFoodSmell[0], arrFoodSmell[1], arrFoodSmell[2] };
-            int[] vectorF2 = new int[] { arrFoodSmell[3], arrFoodSmell[4], arrFoodSmell[5] };
-            int[] vectorF3 = new int[] { arrFoodSmell[6], arrFoodSmell[7], arrFoodSmell[8] };
-            int[] vectorF4 = new int[] { arrFoodSmell[6], arrFoodSmell[3], arrFoodSmell[0] };
-            int[] vectorF5 = new int[] { arrFoodSmell[7], arrFoodSmell[4], arrFoodSmell[1] };
-            int[] vectorF6 = new int[] { arrFoodSmell[8], arrFoodSmell[5], arrFoodSmell[2] };
-            int[] vectorF7 = new int[] { arrFoodSmell[6], arrFoodSmell[4], arrFoodSmell[2] };
-            int[] vectorF8 = new int[] { arrFoodSmell[0], arrFoodSmell[4], arrFoodSmell[8] };
-
-            //which vector smells the strongest
-            int weight = 0;
-            int f1 = 0;
-            int f2 = 0;
-            int f3 = 0;
-            int f4 = 0;
-            int f5 = 0;
-            int f6 = 0;
-            int f7 = 0;
-            int f8 = 0;
-
-            if (countVector(vectorF1, out weight))
-            {
-                f1 = weight;
-            }
-            if (countVector(vectorF2, out weight))
-            {
-                f2 = weight;
-            }
-            if (countVector(vectorF3, out weight))
-            {
-                f3 = weight;
-            }
-            if (countVector(vectorF4, out weight))
-            {
-                f4 = weight;
-            }
-            if (countVector(vectorF5, out weight))
-            {
-                f5 = weight;
-            }
-            if (countVector(vectorF6, out weight))
-            {
-                f6 = weight;
-            }
-            if (countVector(vectorF7, out weight))
-            {
-                f7 = weight;
-            }
-            if (countVector(vectorF8, out weight))
-            {
-                f8 = weight;
-            }
-        }
-
         //decide where to next
-        public static int NextStep(int x, int y, int currentPosition, bool returnMode, GridClass Grid, int chosenTactic)
+        //todo fuction that compares vector.weight values
+        //for choosing a direction
+        //pick random vector for random direction
+        //follow vector or the pheromones vs go into opposite direciton
+        public static int NextStep(int x, int y, int currentPosition, List<Cell> CellsList, Tactic chosenTactic)
         {
+            bool returnMode = chosenTactic.returnMode;
             //int number, bool returnMode, bool allTheSame, bool towards, bool edge, bool picThisDirection, int plusPoints, int minusPoints, int totalTimes, double raito
-
             int nextStep = -1;
+            bool edge = chosenTactic.edge;
 
-            bool edge = CheckForEdges(x, y);
-
-            if (returnMode && AnthillNearby(currentPosition, out nextStep))
+            //If there is an AntHill and Ant is returning go there
+            List<Cell> tilesAround = TilesAround(CellsList, currentPosition);
+            if (returnMode && AnthillNearby(tilesAround, out nextStep))
             {
                 return nextStep;
             }
-            if (!returnMode && FoodNearby(currentPosition, out nextStep))
+            //If there is Food and Ant is searching go there
+            else if (!returnMode && FoodNearby(tilesAround, out nextStep))
             {
                 return nextStep;
             }
+            //if searching
+            if(returnMode)
+            {
+                if (edge)
+                {
 
-            int[] tilesAround = TilesAround(currentPosition);
+                }
+                else if (!edge)
+                {
 
+                }
+            }
+            else if(!returnMode) 
+            {
+                if (edge)
+                {
+
+                }
+                else if (!edge)
+                {
+
+                }
+            }
+            
+            //if pick random, cant go back and has to choose a random vector
+
+            //special case if ant stands on the anthill or food
 
             return nextStep;
         }
-        //decide which vector is more worth to follow
-        private static bool countVector(int[] vector, out int weight)
+        //splits nearby tiles into vectors and checks if there are any search pheromones on them
+        public static void searchVectorsNearby(List<Cell> tilesAround, int currentPosition)
         {
-            weight = 0;
-            if (vector.Length == 3) 
-            { 
-                if (IsVector(vector))
-                {
-                    weight = (vector[0] + vector[1] + vector[2])/3 + (vector[0] + vector[1] + vector[2]) % 3;
-                    if(vector[0]> vector[2])
-                    {
-                        weight *= (-1);
-                    }
-                    return true;
-                }
-            }
-            return false;
+            int[] arrSeachSmell = SmellForClues(tilesAround, currentPosition);
+            GridVector v1 = new GridVector(arrSeachSmell[0], arrSeachSmell[1], arrSeachSmell[2], true, false);  
+            GridVector v2 = new GridVector(arrSeachSmell[3], arrSeachSmell[4], arrSeachSmell[5], true, false);
+            GridVector v3 = new GridVector(arrSeachSmell[6], arrSeachSmell[7], arrSeachSmell[8], true, false);
+            GridVector v4 = new GridVector(arrSeachSmell[6], arrSeachSmell[3], arrSeachSmell[0], true, false);
+            GridVector v5 = new GridVector(arrSeachSmell[7], arrSeachSmell[4], arrSeachSmell[1], true, false);
+            GridVector v6 = new GridVector(arrSeachSmell[8], arrSeachSmell[5], arrSeachSmell[2], true, false);
+            GridVector v7 = new GridVector(arrSeachSmell[6], arrSeachSmell[4], arrSeachSmell[2], true, false);
+            GridVector v8 = new GridVector(arrSeachSmell[0], arrSeachSmell[4], arrSeachSmell[8], true, false);
+
         }
-        //are three value a vector?
-        private static bool IsVector(int[] vector)
+        //todo bool func(out vector) get the highest weight if there is a food vector nearby
+        public static void foodVectorsNearby(List<Cell> tilesAround, int currentPosition) 
         {
-            bool isVector = true;
-            foreach(int i in vector)
-            {
-                if (i <= 0)
-                {
-                    isVector = false;
-                }
-            }
-            return isVector;
+            int[] arrFoodSmell = SmellForFood(tilesAround, currentPosition);
+            GridVector v1 = new GridVector(arrFoodSmell[0], arrFoodSmell[1], arrFoodSmell[2], false, true);
+            GridVector v2 = new GridVector(arrFoodSmell[3], arrFoodSmell[4], arrFoodSmell[5], false, true);
+            GridVector v3 = new GridVector(arrFoodSmell[6], arrFoodSmell[7], arrFoodSmell[8], false, true);
+            GridVector v4 = new GridVector(arrFoodSmell[6], arrFoodSmell[3], arrFoodSmell[0], false, true);
+            GridVector v5 = new GridVector(arrFoodSmell[7], arrFoodSmell[4], arrFoodSmell[1], false, true);
+            GridVector v6 = new GridVector(arrFoodSmell[8], arrFoodSmell[5], arrFoodSmell[2], false, true);
+            GridVector v7 = new GridVector(arrFoodSmell[6], arrFoodSmell[4], arrFoodSmell[2], false, true);
+            GridVector v8 = new GridVector(arrFoodSmell[0], arrFoodSmell[4], arrFoodSmell[8], false, true);
+
         }
         //check if the data statistics are sufficient
         private static bool needMoreTraining(List<Tactic> toChoseFrom, out List<Tactic> needsMoreData)
@@ -219,37 +131,67 @@ namespace GridSystem.Ants
             }
             return unTrained;
         }
-        //return tiles around
-        public static int[] TilesAround(int currentPosition)
+        //return celles around
+        public static List<Cell> TilesAround(List<Cell> CellsList, int currentPosition)
         {
             int[] tilesAround = new int[]
                 {
-                    currentPosition + 1 - 100,
-                    currentPosition + 1,
-                    currentPosition + 1 + 100,
-                    currentPosition - 100,
-                    currentPosition,
-                    currentPosition + 100,
-                    currentPosition - 1 - 100,
-                    currentPosition - 1,
-                    currentPosition - 1 + 100
+                    currentPosition + 1 - 100,  //-x  +y    top right
+                    currentPosition + 1,        // x, +y    right
+                    currentPosition + 1 + 100,  //+x, +y    bottom right
+                    currentPosition - 100,      //-x,  y    top
+                    currentPosition,            // x,  y    initial
+                    currentPosition + 100,      //+x,  y    bottom     
+                    currentPosition - 1 + 100,  //-x, -y    top left
+                    currentPosition - 1,        // x, -y    left
+                    currentPosition - 1 - 100   //+x, -y    bottom left
                 };
-            return tilesAround;
-        }
-        
-        //todo check if there is an Anthouse nearby
-        private static bool AnthillNearby(int currentPosition, out int position)
+            List<Cell> CellsAround = new List<Cell>();
+            foreach (int i in tilesAround)
+            {
+                if(i>0&&i<10001)
+                {
+                    CellsAround.Add(CellsList[i]);
+                }
+            }
+            return CellsAround;
+        }     
+        //return location if Anthouse nearby
+        private static bool AnthillNearby(List<Cell> tilesAround, out int position)
         {
             position = 0;
+            foreach(Cell cell in tilesAround)
+            {
+                if (cell.AnthillPosition)
+                {
+                    if (Support.S_CoordinatesToList(cell.X, cell.Y, out int result)) 
+                    {
+                        position = result;
+                        return true;
+                    }
+                }
+            }
             return false;
         }
-        //todo check if there is an Anthouse food
-        private static bool FoodNearby(int currentPosition, out int position)
+        //return location if there is Food nearby
+        private static bool FoodNearby(List<Cell> tilesAround, out int position)
         {
-            position = 0;
-            return false;
+            {
+                position = 0;
+                foreach (Cell cell in tilesAround)
+                {
+                    if (cell.FoodPosition)
+                    {
+                        if (Support.S_CoordinatesToList(cell.X, cell.Y, out int result))
+                        {
+                            position = result;
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
         }
-
         //ckecks if the ant is standing on the edge
         private static bool CheckForEdges(int x, int y)
         {
@@ -265,11 +207,15 @@ namespace GridSystem.Ants
             }
             return edge;
         }
-
-        public static int[] SmellForFood(GridClass Grid, int currentPosition)
+        //get arr with values of food feromones
+        public static int[] SmellForFood(List<Cell> CellsList, int currentPosition)
         {
-            int[] arr = new int[]
-                {
+            int[] arr = new int[CellsList.Count];
+            for (int i=0; i < CellsList.Count; i++)
+            {
+                arr[i] = CellsList[i].FoodFeromones;
+            }
+               /* {
                     Support.S_Smell(Grid, currentPosition + 1 - 100),       //  +y-x  
                     Support.S_Smell(Grid, currentPosition + 1),             //  +y
                     Support.S_Smell(Grid, currentPosition + 1 + 100),       //  +x+y
@@ -279,13 +225,18 @@ namespace GridSystem.Ants
                     Support.S_Smell(Grid, currentPosition - 1 - 100),       //  -x-y
                     Support.S_Smell(Grid, currentPosition - 1),             //  -y
                     Support.S_Smell(Grid, currentPosition - 1 + 100)        //  -y+x
-                };
+                };*/
             return arr;
         }
-        //get arr with values of "i am looking for food" feromones
-        public static int[] SmellForClues(GridClass Grid, int currentPosition)
+        //get arr with values of search feromones
+        public static int[] SmellForClues(List<Cell> CellsList, int currentPosition)
         {
-            int[] arr = new int[]
+            int[] arr = new int[CellsList.Count];
+            for (int i = 0; i < CellsList.Count; i++)
+            {
+                arr[i] = CellsList[i].SearchFeromones;
+            }
+           /* int[] arr = new int[]
                 {
                     Support.S_OtherSmell(Grid, currentPosition + 1 - 100),       //  +y-x  
                     Support.S_OtherSmell(Grid, currentPosition + 1),             //  +y
@@ -296,7 +247,7 @@ namespace GridSystem.Ants
                     Support.S_OtherSmell(Grid, currentPosition - 1 - 100),       //  -x-y
                     Support.S_OtherSmell(Grid, currentPosition - 1),             //  -y
                     Support.S_OtherSmell(Grid, currentPosition - 1 + 100)        //  -y+x
-                };
+                };*/
             return arr;
         }
     }

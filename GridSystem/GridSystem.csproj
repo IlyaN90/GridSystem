@@ -50,6 +50,7 @@
     <Compile Include="Ants\testAnts.cs" />
     <Compile Include="Grid\Cell.cs" />
     <Compile Include="Grid\GridClass.cs" />
+    <Compile Include="Grid\GridVector.cs" />
     <Compile Include="Grid\Support.cs" />
     <Compile Include="Grid\testGridClass.cs" />
     <Compile Include="Output\PrintGrid.cs" />

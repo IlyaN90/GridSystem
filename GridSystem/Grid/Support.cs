@@ -37,8 +37,8 @@ namespace GridSystem.Grid
             };
             return arr;
         }
-
-        public static int LastFromTheSortedList(List<Tactic> tactics)
+        //sorts list for increasing raito and return number property of the last tactic in list
+        public static int S_LastFromTheSortedList(List<Tactic> tactics)
         {
             List<Tactic> biggestRaitoList = new List<Tactic>();
             double biggest = Double.MinValue;
@@ -48,7 +48,7 @@ namespace GridSystem.Grid
                 {
                     biggestRaitoList.Add(tactic);
                 }
-                else if (Support.CompareDouble(biggest, tactic.raito, out double result))
+                else if (Support.S_CompareDoubles(biggest, tactic.raito, out double result))
                 {
                     biggest = result;
                     biggestRaitoList.Add(tactic);
@@ -57,7 +57,7 @@ namespace GridSystem.Grid
             return biggestRaitoList[biggestRaitoList.Count - 1].number;
         }
 
-        public static bool CompareDouble(double a, double b, out double biggest)
+        public static bool S_CompareDoubles(double a, double b, out double biggest)
         {
             biggest = a;
             long aLong = (long)a;
@@ -95,7 +95,7 @@ namespace GridSystem.Grid
             return foodSpot;
         }
 
-        public static int S_Smell(GridClass Grid, int position)
+        /*public static int S_Smell(GridClass Grid, int position)
         {
             int smellLevel = Grid.CellGrid[position].FoodFeromones;
             if (smellLevel > 0)
@@ -103,9 +103,9 @@ namespace GridSystem.Grid
                 return smellLevel;
             }
             return -1;
-        }
+        }*/
 
-        public static int S_OtherSmell(GridClass Grid, int position)
+        /*public static int S_OtherSmell(GridClass Grid, int position)
         {
             int smellLevel = Grid.CellGrid[position].SearchFeromones;
             if (smellLevel > 0)
@@ -113,7 +113,7 @@ namespace GridSystem.Grid
                 return smellLevel;
             }
             return -1;
-        }
+        }*/
 
         public static void S_MarkCell(GridClass Grid, int position, bool mode)
         {
@@ -125,6 +125,14 @@ namespace GridSystem.Grid
             {
                 Grid.CellGrid[position].SearchFeromones = +50;
             }
+        }
+
+        public static int S_PickRandomTactic(List<Tactic> needsMoreData)
+        {
+            Random rnd = new Random();
+            int pickRandom = rnd.Next(needsMoreData.Count);
+            int decision = needsMoreData[pickRandom].number;
+            return decision;
         }
     }
 }
